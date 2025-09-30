@@ -88,7 +88,9 @@ function TextWorkflow() {
         </div>
       )}
 
-      {imageSrc && <img src={imageSrc} alt="Generated" />}
+      {imageSrc && (
+        <img src={imageSrc} width={500} height={500} alt="Generated" />
+      )}
     </div>
   );
 }

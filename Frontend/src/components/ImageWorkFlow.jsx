@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { OpenAI } from "openai";
+import LoaderOverlay from "./LoaderOverlay";
 
 const client = new OpenAI({
   baseURL: "https://router.huggingface.co/v1",
@@ -12,14 +13,16 @@ function ImageWorkflow() {
   const [file, setFile] = useState(null);
   const [description, setDescription] = useState("");
   const [variations, setVariations] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleGenerateText = async (e) => {
     e.preventDefault();
     if (!file) return alert("Please select an image");
+    setLoading(true);
     const formData = new FormData();
     formData.append("image", file);
     const uploadRes = await axios.post(
-      "http://localhost:9000/api/upload",
+      "https://image-text-generation-two.vercel.app/api/upload",
       formData
     );
 
@@ -46,9 +49,11 @@ function ImageWorkflow() {
       ],
     });
     setDescription(chatCompletion.choices[0].message.content);
+    setLoading(false);
   };
 
   const generateVariations = async () => {
+    setLoading(true);
     try {
       const payload = {
         prompt: description,
@@ -73,10 +78,13 @@ function ImageWorkflow() {
     } catch (error) {
       console.error(error);
     }
+    setLoading(false);
   };
 
   return (
     <div>
+      {loading && <LoaderOverlay />}
+
       <h2>Image → Variations Workflow</h2>
       <input type="file" onChange={(e) => setFile(e.target.files[0])} />
       <button onClick={handleGenerateText}>Analyze</button>
