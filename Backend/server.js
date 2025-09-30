@@ -8,7 +8,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["https://image-text-generation-fday.vercel.app"],
     methods: ["POST"],
     allowedHeaders: [
       "Content-Type",
